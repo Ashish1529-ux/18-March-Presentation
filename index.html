@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON-Driven RS485 Multi-Node IoT Gateway with MQTT Integration</title>
+    <meta name="description"
+        content="Final Year Engineering Project Presentation - JSON-Driven RS485 Multi-Node IoT Gateway with MQTT Integration using Raspberry Pi Pico">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Slide Counter -->
+    <div class="slide-counter" id="slideCounter">1 / 17</div>
+
+    <!-- Fullscreen Button -->
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Fullscreen (F)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" />
+        </svg>
+    </button>
+
+    <!-- Navigation Arrows -->
+    <button class="nav-arrow nav-prev" id="prevBtn" title="Previous (←)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6" />
+        </svg>
+    </button>
+    <button class="nav-arrow nav-next" id="nextBtn" title="Next (→)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+        </svg>
+    </button>
+
+    <!-- ==================== SLIDE 1: TITLE ==================== -->
+    <section class="slide active" id="slide-1">
+        <div class="particle-bg"></div>
+        <div class="slide-content title-slide">
+
+            <!-- Horizontal College Header -->
+            <div class="college-header">
+                <img src="logo.png" alt="MMCOE Logo" class="college-logo">
+                <div class="college-header-text">
+                    <span class="college-name">Marathwada Mitra Mandal's College of Engineering</span>
+                    <span class="college-dept">Department of Electronics & Communication Engineering</span>
+                </div>
+            </div>
+
+            <div class="title-badge">Final Year Project Presentation</div>
+            <h1 class="title-main">
+                <span class="gradient-text">JSON-Driven RS485</span><br>
+                Multi-Node IoT Gateway<br>
+                <span class="gradient-text-alt">with MQTT Integration</span>
+            </h1>
+            <div class="title-divider"></div>
+
+            <div class="title-meta">
+                <div class="meta-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                    </svg>
+                    <span>Raspberry Pi Pico &bull; RS485</span>
+                </div>
+            </div>
+
+            <div
+                style="display: flex; justify-content: center; gap: 4rem; margin-bottom: 2rem; text-align: left; animation: fadeIn 1s ease 1s both;">
+                <div>
+                    <h4
+                        style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">
+                        Project Team</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
+                        <li>1. Ashish Auti</li>
+                        <li>2. Sanjana Sali</li>
+                        <li>3. Kunal Chaudhari</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4
+                        style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">
+                        Project Guide</h4>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 1.05rem;">Mr. Anup G. Dakre</p>
+                </div>
+            </div>
+
+            <div class="title-cta">Press <kbd>→</kbd> or click to begin</div>
+        </div>
+        <div class="slide-accent-line"></div>
+    </section>
+
+    <!-- ==================== SLIDE 2: PROBLEM STATEMENT ==================== -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">01</span>
+                <h2>Problem Statement</h2>
+            </div>
+            <div class="content-grid two-col">
+                <div class="content-card glass-card">
+                    <div class="card-icon red">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                    </div>
+                    <h3>Current Challenges</h3>
+                    <ul class="styled-list">
+                        <li>Traditional IoT systems rely on <strong>WiFi-only</strong> communication — limited range &
+                            high power consumption</li>
+                        <li>No standardized method for <strong>dynamic sensor configuration</strong> at firmware level
+                        </li>
+                        <li>Existing systems require <strong>manual firmware rewrites</strong> for each node</li>
+                        <li><strong>Tightly coupled</strong> hardware-software designs prevent code reuse</li>
+                    </ul>
+                </div>
+                <div class="content-card glass-card">
+                    <div class="card-icon yellow">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                    <h3>Critical Gap</h3>
+                    <p class="highlight-text">There is no lightweight, modular, and <strong>JSON-configurable</strong>
+                        multi-node IoT gateway framework that combines <strong>RS485 wired reliability</strong> with
+                        <strong>MQTT cloud connectivity</strong> — designed for microcontrollers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 3: MOTIVATION ==================== -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">02</span>
+                <h2>Motivation</h2>
+            </div>
+            <div class="motivation-grid">
+                <div class="motivation-card" style="--delay: 0.1s">
+                    <div class="motivation-icon">🏭</div>
+                    <h4>Industrial Need</h4>
+                    <p>RS485 is the industry standard for long-distance, noise-immune wired communication in factories
+                        and buildings</p>
+                </div>
+                <div class="motivation-card" style="--delay: 0.2s">
+                    <div class="motivation-icon">⚡</div>
+                    <h4>Low-Cost MCU Boom</h4>
+                    <p>Raspberry Pi Pico offers a powerful dual-core ARM Cortex-M0+ at just ~$4, enabling scalable
+                        multi-node systems</p>
+                </div>
+                <div class="motivation-card" style="--delay: 0.3s">
+                    <div class="motivation-icon">🔧</div>
+                    <h4>Configuration Pain</h4>
+                    <p>Adding or swapping sensors should NOT require rewriting firmware — JSON config solves this
+                        elegantly</p>
+                </div>
+                <div class="motivation-card" style="--delay: 0.4s">
+                    <div class="motivation-icon">🌐</div>
+                    <h4>Cloud Integration</h4>
+                    <p>MQTT protocol provides lightweight publish-subscribe messaging — perfect for IoT dashboards &
+                        analytics</p>
+                </div>
+                <div class="motivation-card" style="--delay: 0.5s">
+                    <div class="motivation-icon">🧩</div>
+                    <h4>Modularity Gap</h4>
+                    <p>Existing libraries lack Hardware Abstraction Layers — making code non-portable across platforms
+                    </p>
+                </div>
+                <div class="motivation-card" style="--delay: 0.6s">
+                    <div class="motivation-icon">🎓</div>
+                    <h4>Academic Impact</h4>
+                    <p>Bridges embedded systems, networking, and web development — a comprehensive full-stack IoT
+                        project</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 4: PROPOSED SYSTEM ==================== -->
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">03</span>
+                <h2>Proposed System</h2>
+            </div>
+            <div class="proposed-system">
+                <div class="system-overview glass-card">
+                    <h3>🎯 What We Built</h3>
+                    <p>A <strong>modular, JSON-configurable, multi-node IoT gateway</strong> using Raspberry Pi Pico
+                        microcontrollers, RS485 wired communication, and MQTT for cloud connectivity.</p>
+                </div>
+                <div class="system-features">
+                    <div class="feature-item">
+                        <div class="feature-number">01</div>
+                        <div class="feature-desc">
+                            <h4>Master-Node Architecture</h4>
+                            <p>One Pico as Master Gateway, multiple Picos as sensor Nodes — all connected via RS485 bus
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">02</div>
+                        <div class="feature-desc">
+                            <h4>JSON-Driven Configuration</h4>
+                            <p>Each node's sensor type, pin mapping, and polling interval defined in a JSON config at
+                                compile time</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">03</div>
+                        <div class="feature-desc">
+                            <h4>Web UI Firmware Generator</h4>
+                            <p>Browser-based tool auto-generates <code>configJSON.h</code> — no manual coding required
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">04</div>
+                        <div class="feature-desc">
+                            <h4>WiFi + MQTT Pipeline</h4>
+                            <p>ESP8266 on Master Pico → publishes sensor data to MQTT broker → laptop dashboard</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">05</div>
+                        <div class="feature-desc">
+                            <h4>Hardware Abstraction Layer</h4>
+                            <p>ISerial, IGPIO, ITime interfaces make the Gateway library platform-independent</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 5: SYSTEM ARCHITECTURE ==================== -->
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">04</span>
+                <h2>System Architecture</h2>
+            </div>
+            <div class="architecture-diagram">
+                <img src="system_architecture.png" alt="System Architecture Diagram" class="arch-image">
+            </div>
+            <div class="arch-legend">
+                <span class="legend-item"><span class="legend-dot blue"></span>RS485 Bus</span>
+                <span class="legend-item"><span class="legend-dot green"></span>WiFi / MQTT</span>
+                <span class="legend-item"><span class="legend-dot orange"></span>Sensor I/O</span>
+                <span class="legend-item"><span class="legend-dot purple"></span>UART Serial</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 6: HARDWARE COMPONENTS ==================== -->
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">05</span>
+                <h2>Hardware Components</h2>
+            </div>
+            <div class="hardware-grid">
+                <div class="hw-card">
+                    <div class="hw-icon">🔲</div>
+                    <h4>Raspberry Pi Pico</h4>
+                    <p>RP2040 dual-core ARM Cortex-M0+, 264KB SRAM, programmable I/O</p>
+                    <span class="hw-tag">Master + Nodes</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">📡</div>
+                    <h4>MAX485 Module</h4>
+                    <p>RS485 transceiver for half-duplex differential signaling up to 1200m</p>
+                    <span class="hw-tag">Communication</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">📶</div>
+                    <h4>ESP8266 (ESP-01)</h4>
+                    <p>WiFi module with AT command interface, connected via UART to Master</p>
+                    <span class="hw-tag">WiFi Bridge</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">🌡️</div>
+                    <h4>DHT11</h4>
+                    <p>Digital temperature & humidity sensor, single-wire protocol</p>
+                    <span class="hw-tag">Sensor Node</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">📏</div>
+                    <h4>HC-SR04</h4>
+                    <p>Ultrasonic distance sensor, 2cm–400cm range, trigger-echo interface</p>
+                    <span class="hw-tag">Sensor Node</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">💨</div>
+                    <h4>MQ-2 Gas Sensor</h4>
+                    <p>Detects LPG, smoke, methane via analog output (ADC read)</p>
+                    <span class="hw-tag">Sensor Node</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">🚶</div>
+                    <h4>PIR Motion Sensor</h4>
+                    <p>Passive infrared for motion detection, digital HIGH/LOW output</p>
+                    <span class="hw-tag">Sensor Node</span>
+                </div>
+                <div class="hw-card">
+                    <div class="hw-icon">🔌</div>
+                    <h4>Supporting</h4>
+                    <p>Breadboard, jumper wires, USB cables, 5V/3.3V power supply</p>
+                    <span class="hw-tag">Infrastructure</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 7: SOFTWARE ARCHITECTURE ==================== -->
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">06</span>
+                <h2>Software Architecture</h2>
+            </div>
+            <div class="sw-arch">
+                <div class="sw-layer layer-app">
+                    <div class="layer-label">Application Layer</div>
+                    <div class="layer-blocks">
+                        <div class="sw-block">main.cpp<br><small>Node / Master</small></div>
+                        <div class="sw-block">configJSON.h<br><small>JSON Config</small></div>
+                    </div>
+                </div>
+                <div class="layer-arrow">▼</div>
+                <div class="sw-layer layer-lib">
+                    <div class="layer-label">Gateway Library</div>
+                    <div class="layer-blocks">
+                        <div class="sw-block">Gateway.h/.cpp<br><small>Core Logic</small></div>
+                        <div class="sw-block">RS485Handler<br><small>Direction Ctrl</small></div>
+                        <div class="sw-block">JSONParser<br><small>Config Parser</small></div>
+                        <div class="sw-block">MQTTBridge<br><small>WiFi + MQTT</small></div>
+                    </div>
+                </div>
+                <div class="layer-arrow">▼</div>
+                <div class="sw-layer layer-hal">
+                    <div class="layer-label">Hardware Abstraction Layer (HAL)</div>
+                    <div class="layer-blocks">
+                        <div class="sw-block hal">ISerial<br><small>UART Interface</small></div>
+                        <div class="sw-block hal">IGPIO<br><small>Pin Control</small></div>
+                        <div class="sw-block hal">ITime<br><small>Millis/Delay</small></div>
+                    </div>
+                </div>
+                <div class="layer-arrow">▼</div>
+                <div class="sw-layer layer-hw">
+                    <div class="layer-label">Hardware (RP2040 / Pico SDK)</div>
+                    <div class="layer-blocks">
+                        <div class="sw-block hw">UART0/1</div>
+                        <div class="sw-block hw">GPIO Pins</div>
+                        <div class="sw-block hw">Timer/Clock</div>
+                        <div class="sw-block hw">ADC</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 8: RS485 COMMUNICATION ==================== -->
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">07</span>
+                <h2>RS485 Communication Flow</h2>
+            </div>
+            <div class="rs485-content">
+                <div class="rs485-protocol glass-card">
+                    <h3>Half-Duplex Protocol with Direction Control</h3>
+                    <div class="protocol-flow">
+                        <div class="protocol-step">
+                            <div class="step-num">1</div>
+                            <div class="step-text">Master sets <strong>DE/RE pin HIGH</strong> → TX mode</div>
+                        </div>
+                        <div class="protocol-arrow">→</div>
+                        <div class="protocol-step">
+                            <div class="step-num">2</div>
+                            <div class="step-text">Master sends <strong>request frame</strong> with Node ID</div>
+                        </div>
+                        <div class="protocol-arrow">→</div>
+                        <div class="protocol-step">
+                            <div class="step-num">3</div>
+                            <div class="step-text">Master sets <strong>DE/RE pin LOW</strong> → RX mode</div>
+                        </div>
+                        <div class="protocol-arrow">→</div>
+                        <div class="protocol-step">
+                            <div class="step-num">4</div>
+                            <div class="step-text">Node responds with <strong>sensor data frame</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-dot red"></span>
+                        <span class="code-dot yellow"></span>
+                        <span class="code-dot green"></span>
+                        <span class="code-title">RS485Handler.cpp — Direction Control</span>
+                    </div>
+                    <pre><code><span class="kw">void</span> <span class="fn">RS485Handler</span>::<span class="fn">sendData</span>(<span class="kw">const</span> String& data) {
+    gpio->digitalWrite(dirPin, <span class="val">HIGH</span>);  <span class="cmt">// TX mode</span>
+    delayMicroseconds(<span class="val">100</span>);
+    serial->println(data);
+    serial->flush();
+    gpio->digitalWrite(dirPin, <span class="val">LOW</span>);   <span class="cmt">// Back to RX</span>
+}
+
+String <span class="fn">RS485Handler</span>::<span class="fn">receiveData</span>(<span class="kw">unsigned long</span> timeout) {
+    gpio->digitalWrite(dirPin, <span class="val">LOW</span>);   <span class="cmt">// RX mode</span>
+    <span class="kw">unsigned long</span> start = time->millis();
+    <span class="kw">while</span> (time->millis() - start < timeout) {
+        <span class="kw">if</span> (serial->available()) {
+            <span class="kw">return</span> serial->readStringUntil(<span class="val">'\n'</span>);
+        }
+    }
+    <span class="kw">return</span> <span class="str">""</span>;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 9: JSON CONFIGURATION ==================== -->
+    <section class="slide" id="slide-9">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">08</span>
+                <h2>JSON Configuration Model</h2>
+            </div>
+            <div class="json-content">
+                <div class="json-explain glass-card">
+                    <h3>Dynamic Firmware Configuration</h3>
+                    <p>Instead of hardcoding sensor logic, each node reads its behavior from a <strong>compile-time JSON
+                            config</strong> stored in <code>configJSON.h</code>. This enables:</p>
+                    <ul class="styled-list">
+                        <li>Swap sensors without rewriting main.cpp</li>
+                        <li>Define pin mappings, polling rates, and node IDs</li>
+                        <li>Auto-generate config from Web UI</li>
+                    </ul>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-dot red"></span>
+                        <span class="code-dot yellow"></span>
+                        <span class="code-dot green"></span>
+                        <span class="code-title">configJSON.h — Example Node Configuration</span>
+                    </div>
+                    <pre><code><span class="cmt">// Auto-generated by Web UI Firmware Generator</span>
+<span class="kw">#define</span> <span class="val">CONFIG_JSON</span> R<span class="str">"({
+  "nodeId": 1,
+  "role": "node",
+  "sensor": {
+    "type": "DHT11",
+    "dataPin": 15,
+    "pollIntervalMs": 2000
+  },
+  "rs485": {
+    "uartId": 0,
+    "txPin": 0,
+    "rxPin": 1,
+    "dirPin": 2,
+    "baudRate": 9600
+  }
+})"</span>;</code></pre>
+                </div>
+                <div class="json-benefits">
+                    <div class="benefit-tag">🔄 Reusable Firmware</div>
+                    <div class="benefit-tag">📋 Self-Documenting</div>
+                    <div class="benefit-tag">🛠️ Zero Code Changes</div>
+                    <div class="benefit-tag">🌐 Web UI Generated</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 10: UI FIRMWARE GENERATOR ==================== -->
+    <section class="slide" id="slide-10">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">09</span>
+                <h2>UI-Based Firmware Generator</h2>
+            </div>
+            <div class="ui-gen-content">
+                <div class="ui-mockup glass-card">
+                    <div class="mockup-bar">
+                        <span class="code-dot red"></span>
+                        <span class="code-dot yellow"></span>
+                        <span class="code-dot green"></span>
+                        <span class="mockup-url">https://iot-config-generator.local</span>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-form">
+                            <div class="form-group">
+                                <label>Node Role</label>
+                                <div class="mock-select">🔽 Node (Sensor)</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Node ID</label>
+                                <div class="mock-input">1</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Sensor Type</label>
+                                <div class="mock-select">🔽 DHT11 — Temperature</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Data Pin</label>
+                                <div class="mock-input">GP15</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Poll Interval</label>
+                                <div class="mock-input">2000 ms</div>
+                            </div>
+                            <div class="mock-btn">⬇ Generate configJSON.h</div>
+                        </div>
+                        <div class="mockup-output">
+                            <div class="output-label">Generated Output</div>
+                            <pre class="mock-code">#define CONFIG_JSON R"({
+  "nodeId": 1,
+  "sensor": { "type": "DHT11", "dataPin": 15 }
+})";</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-flow">
+                    <div class="flow-step">Select Config</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">Generate .h</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">Download</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">Flash to Pico</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 11: WIFI + MQTT ==================== -->
+    <section class="slide" id="slide-11">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">10</span>
+                <h2>WiFi + MQTT Integration</h2>
+            </div>
+            <div class="mqtt-content">
+                <div class="content-grid two-col">
+                    <div class="content-card glass-card">
+                        <h3>📶 ESP8266 WiFi Bridge</h3>
+                        <ul class="styled-list">
+                            <li>ESP-01 module connected to Master Pico via <strong>UART1</strong></li>
+                            <li>Controlled using <strong>AT commands</strong></li>
+                            <li>Handles TCP connection to MQTT broker</li>
+                            <li>Master Pico sends formatted payloads</li>
+                        </ul>
+                    </div>
+                    <div class="content-card glass-card">
+                        <h3>📨 MQTT Protocol</h3>
+                        <ul class="styled-list">
+                            <li><strong>Lightweight</strong> pub-sub messaging (ideal for MCUs)</li>
+                            <li>Topics: <code>iot/node/{id}/data</code></li>
+                            <li>QoS Level 0 for speed</li>
+                            <li>Mosquitto broker on laptop</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-block" style="margin-top: 1.5rem;">
+                    <div class="code-header">
+                        <span class="code-dot red"></span>
+                        <span class="code-dot yellow"></span>
+                        <span class="code-dot green"></span>
+                        <span class="code-title">MQTTBridge.cpp — Publishing Sensor Data</span>
+                    </div>
+                    <pre><code><span class="kw">void</span> <span class="fn">MQTTBridge</span>::<span class="fn">publish</span>(<span class="kw">uint8_t</span> nodeId, <span class="kw">const</span> String& payload) {
+    String topic = <span class="str">"iot/node/"</span> + String(nodeId) + <span class="str">"/data"</span>;
+    String mqttPacket = buildPublishPacket(topic, payload);
+    
+    espSerial->println(<span class="str">"AT+CIPSEND="</span> + String(mqttPacket.length()));
+    delay(<span class="val">100</span>);
+    espSerial->print(mqttPacket);
+    
+    <span class="cmt">// Wait for ESP8266 ACK</span>
+    waitForResponse(<span class="str">"SEND OK"</span>, <span class="val">5000</span>);
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 12: DATA FLOW ==================== -->
+    <section class="slide" id="slide-12">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">11</span>
+                <h2>End-to-End Data Flow</h2>
+            </div>
+
+            <!-- Full Architecture -->
+            <div class="dataflow-section">
+                <div class="dataflow-label glass-card">
+                    <span class="label-icon">🔷</span> Complete Architecture (Planned)
+                </div>
+                <div class="dataflow-visual compact">
+                    <div class="flow-pipeline">
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">🌡️</div>
+                            <div class="pipe-label">Sensor<br>Read</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">GPIO</div>
+                        </div>
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">🔲</div>
+                            <div class="pipe-label">Pico<br>Node</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">RS485</div>
+                        </div>
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">🖥️</div>
+                            <div class="pipe-label">Master<br>Gateway</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">UART</div>
+                        </div>
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">📶</div>
+                            <div class="pipe-label">ESP8266<br>WiFi</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">MQTT</div>
+                        </div>
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">☁️</div>
+                            <div class="pipe-label">MQTT<br>Broker</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">Sub</div>
+                        </div>
+                        <div class="pipeline-node small-node">
+                            <div class="pipe-icon">💻</div>
+                            <div class="pipe-label">Laptop<br>Dashboard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Working Stage -->
+            <div class="dataflow-section">
+                <div class="dataflow-label completed-label glass-card">
+                    <span class="label-icon">🟢</span> Current Completed Stage
+                </div>
+                <div class="dataflow-visual compact">
+                    <div class="flow-pipeline">
+                        <div class="pipeline-node small-node active-node">
+                            <div class="pipe-icon">🌡️</div>
+                            <div class="pipe-label">Sensor<br>Read</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">GPIO / ADC</div>
+                        </div>
+                        <div class="pipeline-node small-node active-node">
+                            <div class="pipe-icon">🔲</div>
+                            <div class="pipe-label">Pico<br>Node</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">RS485 Frame</div>
+                        </div>
+                        <div class="pipeline-node small-node active-node">
+                            <div class="pipe-icon">🖥️</div>
+                            <div class="pipe-label">Master<br>Pico</div>
+                        </div>
+                        <div class="pipe-connector">
+                            <div class="pipe-line"></div>
+                            <div class="pipe-data">USB Serial</div>
+                        </div>
+                        <div class="pipeline-node small-node active-node">
+                            <div class="pipe-icon">💻</div>
+                            <div class="pipe-label">Laptop<br>Dashboard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- ==================== SLIDE 13: DEMO WORKFLOW ==================== -->
+    <section class="slide" id="slide-13">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">12</span>
+                <h2>Demo Workflow</h2>
+            </div>
+            <div class="demo-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">1</div>
+                    <div class="timeline-content glass-card">
+                        <h4>Configure via Web UI</h4>
+                        <p>Open firmware generator → select sensor type, pins, node ID → download
+                            <code>configJSON.h</code>
+                        </p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">2</div>
+                    <div class="timeline-content glass-card">
+                        <h4>Flash Firmware</h4>
+                        <p>Place <code>configJSON.h</code> in project → compile with Arduino IDE → flash to Pico via USB
+                        </p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">3</div>
+                    <div class="timeline-content glass-card">
+                        <h4>Connect Hardware</h4>
+                        <p>Wire sensor to Node Pico → connect RS485 bus → attach ESP8266 to Master Pico</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">4</div>
+                    <div class="timeline-content glass-card">
+                        <h4>Power Up System</h4>
+                        <p>All nodes boot → Master polls each node in round-robin → nodes respond with sensor data</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">5</div>
+                    <div class="timeline-content glass-card">
+                        <h4>View on Dashboard</h4>
+                        <p>Open MQTT client / dashboard on laptop → see real-time sensor readings from all nodes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 14: REAL-LIFE APPLICATIONS ==================== -->
+    <section class="slide" id="slide-14">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">13</span>
+                <h2>Real-Life Applications</h2>
+            </div>
+            <div class="applications-grid">
+                <div class="app-card app-agriculture">
+                    <div class="app-icon">🌾</div>
+                    <h4>Smart Agriculture</h4>
+                    <p>Deploy sensor nodes across farmland to monitor <strong>soil moisture, temperature &
+                            humidity</strong> in real time. Farmers receive alerts on their dashboard when irrigation is
+                        needed — reducing water waste by up to 40%.</p>
+                    <div class="app-tags">
+                        <span class="app-tag">DHT11 — Climate</span>
+                        <span class="app-tag">Soil Sensor</span>
+                        <span class="app-tag">RS485 — 1200m range</span>
+                    </div>
+                </div>
+                <div class="app-card app-industrial">
+                    <div class="app-icon">🏭</div>
+                    <h4>Industrial Monitoring</h4>
+                    <p>Monitor <strong>gas leaks, machine vibrations & temperature</strong> across a factory floor.
+                        RS485's noise immunity makes it ideal for electrically noisy environments with heavy machinery.
+                    </p>
+                    <div class="app-tags">
+                        <span class="app-tag">MQ-2 — Gas Detection</span>
+                        <span class="app-tag">PIR — Safety</span>
+                        <span class="app-tag">Real-time Alerts</span>
+                    </div>
+                </div>
+                <div class="app-card app-greenhouse">
+                    <div class="app-icon">🏡</div>
+                    <h4>Smart Greenhouse</h4>
+                    <p>Automate greenhouse climate control by monitoring <strong>temperature, humidity & CO₂
+                            levels</strong>. The JSON config lets you swap sensors for different crops without touching
+                        the firmware.</p>
+                    <div class="app-tags">
+                        <span class="app-tag">DHT11 — Temp/Humidity</span>
+                        <span class="app-tag">JSON Config</span>
+                        <span class="app-tag">Plug & Play</span>
+                    </div>
+                </div>
+                <div class="app-card app-warehouse">
+                    <div class="app-icon">📦</div>
+                    <h4>Warehouse & Cold Storage</h4>
+                    <p>Track <strong>temperature & motion</strong> across warehouse zones. Instant alerts when
+                        cold-chain thresholds are breached or unauthorized movement is detected after hours.</p>
+                    <div class="app-tags">
+                        <span class="app-tag">HC-SR04 — Proximity</span>
+                        <span class="app-tag">PIR — Motion</span>
+                        <span class="app-tag">Dashboard Alerts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 15: ADVANTAGES ==================== -->
+    <section class="slide" id="slide-15">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">14</span>
+                <h2>Advantages</h2>
+            </div>
+            <div class="advantages-grid">
+                <div class="adv-card">
+                    <div class="adv-icon">🔌</div>
+                    <h4>Wired Reliability</h4>
+                    <p>RS485 provides noise-immune communication up to 1200m — no WiFi dependency for node-to-master
+                        link</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">💡</div>
+                    <h4>Ultra Low Cost</h4>
+                    <p>Entire system under $30 — Pico ($4) + MAX485 ($0.5) + sensors ($2-5 each)</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🧩</div>
+                    <h4>Plug & Play Sensors</h4>
+                    <p>JSON config model lets you swap sensors by changing a config file — no firmware rewrite</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🏗️</div>
+                    <h4>Clean Architecture</h4>
+                    <p>HAL + dependency injection = testable, portable, maintainable codebase</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">📈</div>
+                    <h4>Scalable</h4>
+                    <p>RS485 bus supports up to 32 nodes — add new nodes simply by flashing new Picos</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🌐</div>
+                    <h4>Cloud Ready</h4>
+                    <p>MQTT integration enables dashboards, alerts, logging, and cloud analytics pipelines</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 16: FUTURE SCOPE ==================== -->
+    <section class="slide" id="slide-16">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">15</span>
+                <h2>Future Scope</h2>
+            </div>
+            <div class="future-content">
+                <div class="future-timeline">
+                    <div class="future-item">
+                        <div class="future-phase">Phase 1</div>
+                        <div class="future-details glass-card">
+                            <h4>OTA Firmware Updates</h4>
+                            <p>Push new configurations over WiFi/MQTT without physical access to nodes</p>
+                        </div>
+                    </div>
+                    <div class="future-item">
+                        <div class="future-phase">Phase 2</div>
+                        <div class="future-details glass-card">
+                            <h4>Edge Computing</h4>
+                            <p>Run ML inference on Pico RP2040 for anomaly detection at the edge</p>
+                        </div>
+                    </div>
+                    <div class="future-item">
+                        <div class="future-phase">Phase 3</div>
+                        <div class="future-details glass-card">
+                            <h4>Custom PCB Design</h4>
+                            <p>Design a single PCB integrating Pico, MAX485, and sensor headers for production</p>
+                        </div>
+                    </div>
+                    <div class="future-item">
+                        <div class="future-phase">Phase 4</div>
+                        <div class="future-details glass-card">
+                            <h4>Cloud Dashboard</h4>
+                            <p>Deploy to AWS IoT Core / Azure IoT Hub with Grafana dashboards and alerting</p>
+                        </div>
+                    </div>
+                    <div class="future-item">
+                        <div class="future-phase">Phase 5</div>
+                        <div class="future-details glass-card">
+                            <h4>Security Layer</h4>
+                            <p>Add AES-128 encryption on RS485 frames and TLS for MQTT connections</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 17: CONCLUSION ==================== -->
+    <section class="slide" id="slide-17">
+        <div class="slide-content">
+            <div class="slide-header">
+                <span class="slide-number">16</span>
+                <h2>Conclusion</h2>
+            </div>
+            <div class="conclusion-content">
+                <div class="conclusion-main glass-card">
+                    <blockquote>
+                        "We designed and implemented a <strong>modular, scalable, and JSON-configurable IoT
+                            gateway</strong> using Raspberry Pi Pico microcontrollers that bridges <strong>RS485 wired
+                            reliability</strong> with <strong>MQTT cloud connectivity</strong> — featuring a custom C
+                        Gateway library with full hardware abstraction."
+                    </blockquote>
+                </div>
+                <div class="conclusion-highlights">
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>Multi-node RS485 communication — <strong>tested & working</strong></span>
+                    </div>
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>JSON-driven dynamic configuration — <strong>zero code changes for new
+                                sensors</strong></span>
+                    </div>
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>Web UI firmware generator — <strong>user-friendly config tool</strong></span>
+                    </div>
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>WiFi + MQTT pipeline — <strong>real-time cloud data streaming</strong></span>
+                    </div>
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>Hardware Abstraction Layer — <strong>portable, testable, clean code</strong></span>
+                    </div>
+                    <div class="conc-item">
+                        <span class="conc-check">✓</span>
+                        <span>Under $30 total cost — <strong>scalable to 32+ nodes</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 18: THANK YOU ==================== -->
+    <section class="slide" id="slide-18">
+        <div class="particle-bg"></div>
+        <div class="slide-content title-slide">
+            <div class="thankyou-icon">🎓</div>
+            <h1 class="title-main">
+                <span class="gradient-text">Thank You</span>
+            </h1>
+            <div class="title-divider"></div>
+            <h3 class="thankyou-subtitle">Questions & Discussion</h3>
+            <div class="thankyou-info">
+                <p>JSON-Driven RS485 Multi-Node IoT Gateway with MQTT Integration</p>
+                <p class="thankyou-dept">Department of Electronics &amp; Communication Engineering</p>
+            </div>
+            <div class="contact-badges">
+                <a class="badge" href="https://github.com/Ashish1529-ux/Full-BE-Project-Repo" target="_blank"
+                    rel="noopener" onclick="event.stopPropagation();">📂 GitHub Repository</a>
+                <a class="badge" href="report.docx" download onclick="event.stopPropagation();">📄 Project Report</a>
+            </div>
+        </div>
+        <div class="slide-accent-line"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
